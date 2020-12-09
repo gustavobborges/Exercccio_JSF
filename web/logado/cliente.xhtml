@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./index.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="form">   
+            <p:tabView activeIndex="#{clienteC.numeroAba}">
+                <p:tab title="Pesquisa">
+                    <p:messages id="messages" closable="true">
+                        <p:autoUpdate />
+                    </p:messages>
+                    <!--<p:growl id="men" life="500"/>-->
+                    <p:panel id="basic" header="Pesquisa Cliente" style="margin-bottom:20px">
+                        <h:panelGrid columns="3" cellpadding="5">
+                            <p:outputLabel for="nome" value="Nome: " />
+                            <p:inputText id="nome" value="#{clienteC.cliente.nome}" required="true"
+                                         requiredMessage="O NOME é obrigatório!"/>
+                            <p:commandButton value="Pesquisar" actionListener="#{clienteC.pesquisarPorNome()}"
+                                             update="tabela" process="@this nome"/>
+                        </h:panelGrid> 
+                        <p:dataTable id="tabela" var="cliente" rows="10" value="#{clienteC.modelClientes}"
+                                     paginator="true" emptyMessage="Nenhum cliente foi encontrado."
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,15">
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{cliente.nome}" />
+                            </p:column>
+
+                            <p:column headerText="Cpf">
+                                <h:outputText value="#{cliente.cpf}" />
+                            </p:column>
+
+                            <p:column headerText="Email">
+                                <h:outputText value="#{cliente.email}" />
+                            </p:column>
+
+                            <p:column headerText="Rg">
+                                <h:outputText value="#{cliente.rg}" />
+                            </p:column>
+
+                            <p:column headerText="Telefone">
+                                <h:outputText value="#{cliente.telefone}" />
+                            </p:column>
+
+                            <p:column headerText="Ação">
+                                <p:commandButton icon="pi pi-trash" actionListener="#{clienteC.excluir()}" update="@form" process="@this">
+                                    <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+
+                                <p:commandButton icon="pi pi-pencil" actionListener="#{clienteC.alterar()}"
+                                                 update="@form" process="@this"/>
+                            </p:column>
+
+                        </p:dataTable>  
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog>   
+                    </p:panel>
+                </p:tab>          
+                <p:tab title="Novo">
+                    <p:panel header="Cadastro">
+                        <h:panelGrid id="panel_salvar" columns="2" cellpadding="5">
+
+                            <p:outputLabel for="cliente" value="Nome:"/>
+                            <p:inputText id="cliente" value="#{clienteC.cliente.nome}" required="true" requiredMessage="Nome é obrigatório!"/>
+
+                            <p:outputLabel for="cpf" value="Cpf:"/>
+                            <p:inputMask id="cpf" value="#{clienteC.cliente.cpf}" mask="999.999.999-99" required="true" requiredMessage="Cpf: é obrigatório!"/>
+
+                            <p:outputLabel for="email" value="Email:"/>
+                            <p:inputMask id="email" value="#{clienteC.cliente.email}" required="true" requiredMessage="Email: é obrigatório!"/>
+
+                            <p:outputLabel for="rg" value="Rg:"/>
+                            <p:inputMask id="rg" value="#{clienteC.cliente.rg}" mask="9.999.999" required="true" requiredMessage="Rg: é obrigatório!"/>
+
+                            <p:outputLabel for="telefone" value="Telefone:"/>
+                            <p:inputMask id="telefone" value="#{clienteC.cliente.telefone}" mask="(99)99999-9999" required="true" requiredMessage="Telefone é obrigatório!"/>
+                            
+                        </h:panelGrid>
+                    </p:panel>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Salvar" actionListener="#{clienteC.salvar()}" 
+                                         process="@this panel_salvar" update="@form" />
+                        <p:commandButton value="Limpar" />
+                    </h:panelGrid>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>
